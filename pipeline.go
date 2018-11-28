@@ -19,6 +19,7 @@ func (p *Pipeline) Enqueue(filter Filter) {
 }
 
 func (p *Pipeline) Process(message Message) Message {
+	defer close(p.head)
 	p.head <- message
 	return <- p.tail
 }

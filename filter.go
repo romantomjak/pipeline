@@ -9,6 +9,7 @@ type EchoFilter struct{}
 func (ef EchoFilter) Process(in chan Message) chan Message {
 	out := make(chan Message)
 	go func() {
+		defer close(out)
 		m := <- in
 		out <- m
 	}()
