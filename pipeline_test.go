@@ -2,20 +2,28 @@ package pipeline
 
 import "testing"
 
-type DummyFilter struct{}
-
-func TestCanCreatePipelineWithNoFilters(t *testing.T) {
+func TestPipeline_Enqueue(t *testing.T) {
+	ef := EchoFilter{}
 	p := NewPipeline()
-	if p.filters != nil {
-		t.Error("Expected filters to be empty")
+	p.Enqueue(ef)
+	if p.head == nil {
+		t.Error("Expected Pipeline head to not be nil")
+	}
+	if p.tail == nil {
+		t.Error("Expected Pipeline tail to not be nil")
 	}
 }
 
-func TestCanEnqueueDummyFilterIntoPipeline(t *testing.T) {
-	f := &DummyFilter{}
+
+func TestPipeline_Process(t *testing.T) {
+	ef := EchoFilter{}
 	p := NewPipeline()
-	p.Enqueue(f)
-	if p.filters == nil {
-		t.Error("Expected filters to contain DummyFilter")
+	p.Enqueue(ef)
+	want := Message{
+		Body: "Hello World",
+	}
+	got := p.Process(want)
+	if want.Body != got.Body {
+		t.Errorf("Echo filter roundtrip error: want='%s', got='%s'", want, got)
 	}
 }

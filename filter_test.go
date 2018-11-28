@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestEchoFilterRoundtrip(t *testing.T) {
-	ef := &EchoFilter{}
+func TestEchoFilter_Process(t *testing.T) {
+	ef := EchoFilter{}
 	in := make(chan Message)
 	want := Message{
 		Body: "Hello World",
