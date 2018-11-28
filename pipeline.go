@@ -9,3 +9,7 @@ func NewPipeline() *Pipeline {
 		filters: nil,
 	}
 }
+
+func (p *Pipeline) Enqueue(filter Filter) {
+	p.filters = append(p.filters, filter)
+}
