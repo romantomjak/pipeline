@@ -26,3 +26,21 @@ func TestPipelineProcessEchoFilter(t *testing.T) {
 		t.Errorf("Pipeline process error: want=%s, got=%s", want, got)
 	}
 }
+
+func TestPipelineProcessMultipleFilters(t *testing.T) {
+	ef := EchoFilter{}
+	rf := ReverseFilter{}
+	p := NewPipeline()
+	p.Enqueue(ef)
+	p.Enqueue(rf)
+	m := Message{
+		Body: "Hello World",
+	}
+	want := Message{
+		Body: "dlroW olleH",
+	}
+	got := p.Process(m)
+	if want != got {
+		t.Errorf("Pipeline process error: want=%s, got=%s", want, got)
+	}
+}
