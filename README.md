@@ -19,17 +19,15 @@ import (
 )
 
 func main()  {
-    ef := EchoFilter{}
+    rf := pipeline.ReverseFilter{}
 
-    p := NewPipeline()
-    p.Enqueue(ef)
+    p := pipeline.NewPipeline()
+    p.Enqueue(rf)
 
-    m := Message{
-        Body: "Hello World",
-    }
+    m := "Hello World"
 
     out := p.Process(m)
-    fmt.Printf("Pipeline result message: %s", out.Body)
+    fmt.Printf("Pipeline result message: %s", out)
 }
 ```
 
