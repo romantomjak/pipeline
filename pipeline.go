@@ -18,8 +18,11 @@ func (p *Pipeline) Enqueue(filter Filter) {
 	}
 }
 
-func (p *Pipeline) Process(message Message) Message {
+func (p *Pipeline) Process(in Message) (out Message) {
+	if p.head == nil {
+		return in
+	}
 	defer close(p.head)
-	p.head <- message
+	p.head <- in
 	return <- p.tail
 }

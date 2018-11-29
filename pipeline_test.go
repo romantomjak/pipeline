@@ -2,20 +2,19 @@ package pipeline
 
 import "testing"
 
-func TestPipeline_Enqueue(t *testing.T) {
-	ef := EchoFilter{}
-	p := NewPipeline()
-	p.Enqueue(ef)
-	if p.head == nil {
-		t.Error("Expected Pipeline head to not be nil")
+func TestEmptyPipelineReturnsSameMessage(t *testing.T) {
+	want := Message{
+		Body: "Hello World",
 	}
-	if p.tail == nil {
-		t.Error("Expected Pipeline tail to not be nil")
+	p := NewPipeline()
+	got := p.Process(want)
+	if want != got {
+		t.Errorf("Pipeline unexpectedly modified message: want=%s, got=%s", want, got)
 	}
 }
 
 
-func TestPipeline_Process(t *testing.T) {
+func TestPipelineProcessEchoFilter(t *testing.T) {
 	ef := EchoFilter{}
 	p := NewPipeline()
 	p.Enqueue(ef)
@@ -23,7 +22,7 @@ func TestPipeline_Process(t *testing.T) {
 		Body: "Hello World",
 	}
 	got := p.Process(want)
-	if want.Body != got.Body {
-		t.Errorf("Echo filter roundtrip error: want='%s', got='%s'", want, got)
+	if want != got {
+		t.Errorf("Pipeline process error: want=%s, got=%s", want, got)
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestEchoFilter_Process(t *testing.T) {
+func TestEchoFilterProcess(t *testing.T) {
 	ef := EchoFilter{}
 	in := make(chan Message)
 	want := Message{
