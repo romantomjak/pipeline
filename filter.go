@@ -31,7 +31,7 @@ func (rf ReverseFilter) Process(in chan Message) chan Message {
 	go func() {
 		defer close(out)
 		m := <- in
-		m.Body = rf.reverse(m.Body)
+		m = rf.reverse(m.(string))
 		out <- m
 	}()
 	return out
