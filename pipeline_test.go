@@ -1,7 +1,6 @@
 package pipeline
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -9,9 +8,7 @@ func TestEmptyPipelineReturnsSameMessage(t *testing.T) {
 	p := NewPipeline()
 	want := []byte("Hello World")
 	got := p.Process(want)
-	if bytes.Compare(got, want) != 0 {
-		t.Errorf("Pipeline unexpectedly modified message: want=%s, got=%s", want, got)
-	}
+	assertByteBuffers(t, got, want)
 }
 
 
@@ -21,9 +18,7 @@ func TestPipelineProcessEchoFilter(t *testing.T) {
 	p.Enqueue(ef)
 	want := []byte("Hello World")
 	got := p.Process(want)
-	if bytes.Compare(got, want) != 0 {
-		t.Errorf("Pipeline process error: want=%s, got=%s", want, got)
-	}
+	assertByteBuffers(t, got, want)
 }
 
 func TestPipelineProcessMultipleFilters(t *testing.T) {
@@ -34,7 +29,5 @@ func TestPipelineProcessMultipleFilters(t *testing.T) {
 	p.Enqueue(rf)
 	got := p.Process([]byte("Hello World"))
 	want := []byte("dlroW olleH")
-	if bytes.Compare(got, want) != 0 {
-		t.Errorf("Pipeline process error: want=%s, got=%s", want, got)
-	}
+	assertByteBuffers(t, got, want)
 }

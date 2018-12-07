@@ -5,6 +5,13 @@ import (
 	"testing"
 )
 
+func assertByteBuffers(t *testing.T, got, want []byte) {
+	t.Helper()
+	if bytes.Compare(got, want) != 0 {
+		t.Errorf("got '%s', want '%s'", got, want)
+	}
+}
+
 func TestEchoFilterProcess(t *testing.T) {
 	ef := EchoFilter{}
 	in := make(chan []byte)
@@ -13,9 +20,7 @@ func TestEchoFilterProcess(t *testing.T) {
 	}()
 	got := <- ef.Process(in)
 	want := []byte("Hello World")
-	if bytes.Compare(got, want) != 0 {
-		t.Errorf("Echo filter roundtrip error: want='%s', got='%s'", want, got)
-	}
+	assertByteBuffers(t, got, want)
 }
 
 func TestReverseFilterProcess(t *testing.T) {
@@ -26,7 +31,5 @@ func TestReverseFilterProcess(t *testing.T) {
 	}()
 	want := []byte("dlroW olleH")
 	got := <- rf.Process(in)
-	if bytes.Compare(got, want) != 0 {
-		t.Errorf("got '%s', want '%s'", got, want)
-	}
+	assertByteBuffers(t, got, want)
 }
