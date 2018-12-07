@@ -1,13 +1,13 @@
 package pipeline
 
 type Filter interface {
-	Process(in chan Message) chan Message
+	Process(in chan []byte) chan []byte
 }
 
 type EchoFilter struct{}
 
-func (ef EchoFilter) Process(in chan Message) chan Message {
-	out := make(chan Message)
+func (ef EchoFilter) Process(in chan []byte) chan []byte {
+	out := make(chan []byte)
 	go func() {
 		defer close(out)
 		m := <- in
@@ -18,21 +18,21 @@ func (ef EchoFilter) Process(in chan Message) chan Message {
 
 type ReverseFilter struct{}
 
-func (rf ReverseFilter) reverse(s string) string {
-	r := []rune(s)
+func (rf ReverseFilter) reverse(b []byte) []byte {
+	r := make([]byte, len(b))
+	copy(r, b)
 	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
 		r[i], r[j] = r[j], r[i]
 	}
-	return string(r)
+	return r
 }
 
-func (rf ReverseFilter) Process(in chan Message) chan Message {
-	out := make(chan Message)
+func (rf ReverseFilter) Process(in chan []byte) chan []byte {
+	out := make(chan []byte)
 	go func() {
 		defer close(out)
 		m := <- in
-		m = rf.reverse(m.(string))
-		out <- m
+		out <- rf.reverse(m)
 	}()
 	return out
 }

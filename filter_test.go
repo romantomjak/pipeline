@@ -1,32 +1,32 @@
 package pipeline
 
 import (
+	"bytes"
 	"testing"
 )
 
 func TestEchoFilterProcess(t *testing.T) {
 	ef := EchoFilter{}
-	in := make(chan Message)
+	in := make(chan []byte)
 	go func() {
-		in <- "Hello World"
+		in <- []byte("Hello World")
 	}()
-	want := "Hello World"
 	got := <- ef.Process(in)
-	if want != got {
+	want := []byte("Hello World")
+	if bytes.Compare(got, want) != 0 {
 		t.Errorf("Echo filter roundtrip error: want='%s', got='%s'", want, got)
 	}
 }
 
 func TestReverseFilterProcess(t *testing.T) {
 	rf := ReverseFilter{}
-	in := make(chan Message)
-	m := "Hello World"
-	want := "dlroW olleH"
+	in := make(chan []byte)
 	go func() {
-		in <- m
+		in <- []byte("Hello World")
 	}()
+	want := []byte("dlroW olleH")
 	got := <- rf.Process(in)
-	if want != got {
-		t.Errorf("Reverse filter roundtrip error: want='%s', got='%s'", want, got)
+	if bytes.Compare(got, want) != 0 {
+		t.Errorf("got '%s', want '%s'", got, want)
 	}
 }

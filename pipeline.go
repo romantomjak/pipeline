@@ -1,8 +1,8 @@
 package pipeline
 
 type Pipeline struct {
-	head chan Message
-	tail chan Message
+	head chan []byte
+	tail chan []byte
 }
 
 func NewPipeline() *Pipeline {
@@ -11,14 +11,14 @@ func NewPipeline() *Pipeline {
 
 func (p *Pipeline) Enqueue(filter Filter) {
 	if p.tail == nil {
-		p.head = make(chan Message)
+		p.head = make(chan []byte)
 		p.tail = filter.Process(p.head)
 	} else {
 		p.tail = filter.Process(p.tail)
 	}
 }
 
-func (p *Pipeline) Process(in Message) (out Message) {
+func (p *Pipeline) Process(in []byte) (out []byte) {
 	if p.head == nil {
 		return in
 	}
