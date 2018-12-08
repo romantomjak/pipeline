@@ -8,7 +8,7 @@ func TestEmptyPipelineReturnsSameMessage(t *testing.T) {
 	p := NewPipeline()
 	want := []byte("Hello World")
 	got := p.Process(want)
-	assertByteBuffers(t, got, want)
+	assertBytes(t, got, want)
 }
 
 
@@ -18,7 +18,7 @@ func TestPipelineProcessEchoFilter(t *testing.T) {
 	p.Enqueue(ef)
 	want := []byte("Hello World")
 	got := p.Process(want)
-	assertByteBuffers(t, got, want)
+	assertBytes(t, got, want)
 }
 
 func TestPipelineProcessMultipleFilters(t *testing.T) {
@@ -29,5 +29,5 @@ func TestPipelineProcessMultipleFilters(t *testing.T) {
 	p.Enqueue(rf)
 	got := p.Process([]byte("Hello World"))
 	want := []byte("dlroW olleH")
-	assertByteBuffers(t, got, want)
+	assertBytes(t, got, want)
 }

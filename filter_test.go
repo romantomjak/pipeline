@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func assertByteBuffers(t *testing.T, got, want []byte) {
+func assertBytes(t *testing.T, got, want []byte) {
 	t.Helper()
 	if bytes.Compare(got, want) != 0 {
 		t.Errorf("got '%s', want '%s'", got, want)
@@ -20,7 +20,7 @@ func TestEchoFilterProcess(t *testing.T) {
 	}()
 	got := <- ef.Process(in)
 	want := []byte("Hello World")
-	assertByteBuffers(t, got, want)
+	assertBytes(t, got, want)
 }
 
 func TestReverseFilterProcess(t *testing.T) {
@@ -31,5 +31,5 @@ func TestReverseFilterProcess(t *testing.T) {
 	}()
 	want := []byte("dlroW olleH")
 	got := <- rf.Process(in)
-	assertByteBuffers(t, got, want)
+	assertBytes(t, got, want)
 }
