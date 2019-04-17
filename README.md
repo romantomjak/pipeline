@@ -10,25 +10,54 @@ Each filter exposes a very simple interface: it receives messages on the inbound
 
 ## Example
 
+To get you started, here's a filter that will reverse incoming message:
+
 ```go
 package main
 
 import (
-    "fmt"
-    "github.com/romantomjak/pipeline"
+	"fmt"
+
+	"github.com/romantomjak/pipeline"
 )
 
-func main()  {
-    rf := pipeline.ReverseFilter{}
+type ReverseFilter struct{}
 
-    p := pipeline.NewPipeline()
-    p.Enqueue(rf)
-
-    m := "Hello World"
-
-    out := p.Process(m)
-    fmt.Printf("Pipeline result message: %s", out)
+func (rf ReverseFilter) reverse(b []byte) []byte {
+	r := make([]byte, len(b))
+	copy(r, b)
+	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return r
 }
+
+func (rf ReverseFilter) Process(in chan []byte) chan []byte {
+	out := make(chan []byte)
+	go func() {
+		for m := range in {
+			out <- rf.reverse(m)
+		}
+		close(out)
+	}()
+	return out
+}
+
+func main() {
+	rf := ReverseFilter{}
+
+	p := pipeline.NewPipeline()
+	p.Add(rf)
+
+	out := p.Process([]byte("Hello World"))
+	fmt.Printf("Pipeline result: %s\n", out)
+}
+```
+
+Output:
+
+```sh
+Pipeline result: dlroW olleH
 ```
 
 ## License
