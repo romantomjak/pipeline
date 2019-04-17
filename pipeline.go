@@ -26,7 +26,7 @@ func (p *Pipeline) Process(in []byte) (out []byte) {
 	if p.head == nil {
 		return in
 	}
-	defer close(p.head)
 	p.head <- in
+	close(p.head)
 	return <-p.tail
 }
